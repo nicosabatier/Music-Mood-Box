@@ -7,10 +7,7 @@ from Adafruit_IO import Client
 aio = Client('victorioo93310','aio_gyfw541n4r5hM0tc6sYArCN5ywCs')
 
 data = aio.receive('playlist')
-#ambiance = data.value
-#ambiance = sys.argv[1]
-#print (ambiance)
-ambiance = 'reggae'
+ambiance = data.value
 print (ambiance)
 sleep(5)
 wordlist = []
