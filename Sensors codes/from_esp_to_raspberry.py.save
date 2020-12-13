@@ -1,0 +1,54 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Nov  7 18:53:27 2020
+
+@author: victo
+"""
+import struct
+import serial
+import random
+from datetime import datetime
+from time import sleep
+
+def get_bytes_from_esp(ser):
+    number = b''
+    for i in range(4):
+        number+=ser.read()
+    return number
+
+def read_from_esp(tty):
+
+    ser = serial.Serial('/dev/{}'.format(tty), 9600, timeout=1)
+    ser.flush()
+
+    number=get_bytes_from_esp(ser)
+    number2=get_bytes_from_esp(ser)
+    number3=get_bytes_from_esp(ser)
+
+    value = struct.unpack('i' , number)[0]
+    value2 = round(struct.unpack('f',number2)[0], 2)
+    value3 = struct.unpack('i',number3)[0]
+
+    return value, value2, value3
+
+def get_music_from_luminosity(luminosity):
+    if luminosity < 50 :
+        return "very_calm"
+    elif luminosity < 200:
+        return "calm"
+    elif luminosity < 500:
+        return "room_luminosity"
+    elif luminosity < 800:
+        return "ambiant"
+    else:
+        return "caliente"
+
+
+if __name__ == '__main__':
+    for i in range(20):
+        sleep(0.5)
+        luminosity, temperature, mouvement = read_from_esp('ttyUSB0') 
+        print("luminosity:", luminosity, get_music_from_luminosity(luminosity))
+	print("temperature:", temperature,"C")
+        print("mouvement:", mouvement)
+        print("----------------")
